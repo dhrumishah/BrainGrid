@@ -1,6 +1,9 @@
 import { authModalState } from "@/atoms/authModalAtom";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/firebase";
+import { useRouter } from "next/router";
 
 type Props = {};
 
@@ -9,8 +12,33 @@ const Login = (props: Props) => {
   const handleClick = (type: "login" | "register" | "forgotPassword") => {
     setAuthModalState((prev) => ({ ...prev, type }));
   };
+  const [inputs, setInputs] = useState({ email: "", password: "" });
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+  const router = useRouter();
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!inputs.email || !inputs.password)
+      return alert("Please fill all the fields");
+    try {
+      const newUser = await signInWithEmailAndPassword(
+        inputs.email,
+        inputs.password
+      );
+      router.push("/");
+      if (!newUser) return;
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+  useEffect(() => {
+    if (error) alert(error.message);
+  }, [error]);
   return (
-    <form className="space-y-6 px-6 pb-4">
+    <form className="space-y-6 px-6 pb-4" onSubmit={handleLogin}>
       <h3 className="text-xl font-medium text-white">Sign in to BrainGrid</h3>
       <div>
         <label
@@ -20,6 +48,7 @@ const Login = (props: Props) => {
           Your Email
         </label>
         <input
+          onChange={handleInputChange}
           type="email"
           name="email"
           id="email"
@@ -38,6 +67,7 @@ const Login = (props: Props) => {
           Your Password
         </label>
         <input
+          onChange={handleInputChange}
           type="password"
           name="password"
           id="password"
@@ -55,7 +85,7 @@ const Login = (props: Props) => {
       text-sm px-5 py-2.5 text-center bg-brand-orange hover:bg-brand-orange-s
   "
       >
-        Log In
+        {loading ? "Loading..." : "Log In"}
       </button>
       <button
         className="flex w-full justify-end"
