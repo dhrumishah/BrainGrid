@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.1.9",
     "@types/node": "20.2.5",
     "@types/react": "18.2.8",
     "@types/react-dom": "18.2.4",
+    "@uiw/codemirror-theme-vscode": "^4.21.2",
+    "@uiw/react-codemirror": "^4.21.2",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
     "firebase": "^9.22.1",
