@@ -10,7 +10,7 @@ import {
   runTransaction,
   updateDoc,
 } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
   AiFillLike,
@@ -24,9 +24,13 @@ import { toast } from "react-toastify";
 
 type ProblemDescriptionProps = {
   problem: Problem;
+  _solved: boolean;
 };
 
-const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
+const ProblemDescription: React.FC<ProblemDescriptionProps> = ({
+  problem,
+  _solved,
+}) => {
   const [user] = useAuthState(auth);
   const { currentProblem, loading, problemDifficultyClass, setCurrentProblem } =
     useGetCurrentProblem(problem.id);
@@ -216,7 +220,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
           <div className="w-full">
             <div className="flex space-x-4">
               <div className="flex-1 mr-2 text-lg text-white font-medium">
-                {problem.title}
+                {problem?.title}
               </div>
             </div>
             {!loading && currentProblem && (
@@ -224,9 +228,9 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
                 <div
                   className={`${problemDifficultyClass} inline-block rounded-[21px] bg-opacity-[.15] px-2.5 py-1 text-xs font-medium capitalize `}
                 >
-                  {currentProblem?.difficulty}
+                  {currentProblem.difficulty}
                 </div>
-                {solved && (
+                {(solved || _solved) && (
                   <div className="rounded p-[3px] ml-4 text-lg transition-colors duration-200 text-green-s text-dark-green-s">
                     <BsCheck2Circle />
                   </div>
@@ -273,6 +277,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
                 </div>
               </div>
             )}
+
             {loading && (
               <div className="mt-3 flex space-x-2">
                 <RectangleSkeleton />
@@ -282,6 +287,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
                 <CircleSkeleton />
               </div>
             )}
+
             {/* Problem Statement(paragraphs) */}
             <div className="text-white text-sm">
               <div
@@ -318,9 +324,9 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
             </div>
 
             {/* Constraints */}
-            <div className="my-5 pb-2">
+            <div className="my-8 pb-4">
               <div className="text-white text-sm font-medium">Constraints:</div>
-              <ul className="text-white ml-5 list-disc">
+              <ul className="text-white ml-5 list-disc ">
                 <div
                   dangerouslySetInnerHTML={{ __html: problem.constraints }}
                 />
