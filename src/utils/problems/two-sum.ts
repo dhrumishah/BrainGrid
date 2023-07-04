@@ -81,3 +81,15 @@ export const twoSum: Problem = {
   order: 1,
   starterFunctionName: "function twoSum(",
 };
+
+// ans: function twoSum(nums,target){
+//   const hashTable={};
+//     for(let i = 0; i <= nums.length; i++){
+//       let neededVal= target-nums[i]
+//       if(!(neededVal in hashTable)){
+//         hashTable[nums[i]]=i
+//       }else{
+//         return[hashTable[neededVal],i]
+//       }
+//     }
+//   };
